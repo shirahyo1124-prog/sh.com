@@ -1,128 +1,80 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ja">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>入居者紹介フォーム</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>入居者紹介フォーム</title>
 
-<style>
-body {
-  font-family: sans-serif;
-  background: #f5f5f5;
-  padding: 20px;
-}
+  <!-- アイコン -->
+  <link rel="stylesheet" href="https://unpkg.com/ionicons@4.5.10-0/dist/css/ionicons.min.css">
 
-.container {
-  max-width: 600px;
-  margin: auto;
-  background: white;
-  padding: 20px;
-  border-radius: 10px;
-}
+  <!-- 郵便番号→住所自動入力 -->
+  <script src="https://yubinbango.github.io/yubinbango-core/yubinbango-core.js"></script>
 
-h1 {
-  text-align: center;
-}
-
-input, select, button {
-  width: 100%;
-  padding: 10px;
-  margin: 8px 0;
-}
-
-button {
-  background: black;
-  color: white;
-  border: none;
-}
-
-.card {
-  background: #fff;
-  padding: 10px;
-  margin-top: 10px;
-  border: 1px solid #ddd;
-}
-
-.status-未対応 { color: red; }
-.status-対応中 { color: orange; }
-.status-完了 { color: green; }
-</style>
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 20px;
+      background: #f5f5f5;
+    }
+    .box {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      max-width: 400px;
+      margin: auto;
+    }
+    input, button {
+      width: 100%;
+      padding: 10px;
+      margin-top: 10px;
+      font-size: 16px;
+    }
+    button {
+      background: #007bff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+    }
+  </style>
 </head>
 
 <body>
 
-<div class="container">
+<div class="box h-adr">
+  <h2><i class="ion-ios-home"></i> 入居者紹介フォーム</h2>
 
-<h1>入居者紹介フォーム</h1>
+  <!-- 郵便番号 -->
+  <input type="text" class="p-postal-code" placeholder="郵便番号 (例: 1000001)">
 
-<h2>入力</h2>
+  <!-- 住所 -->
+  <input type="text" class="p-region p-locality p-street-address p-extended-address" placeholder="住所">
 
-<input id="name" placeholder="名前">
-<input id="phone" placeholder="電話番号">
-<input id="address" placeholder="住所">
+  <!-- 名前 -->
+  <input type="text" id="name" placeholder="名前">
 
-<select id="status">
-  <option>未対応</option>
-  <option>対応中</option>
-  <option>完了</option>
-</select>
+  <!-- 電話番号 -->
+  <input type="text" id="phone" placeholder="電話番号">
 
-<button onclick="add()">送信</button>
+  <!-- 送信 -->
+  <button onclick="sendData()">送信</button>
 
-<h2>一覧</h2>
-<div id="list"></div>
-
+  <p id="result"></p>
 </div>
 
 <script>
-
-let data = JSON.parse(localStorage.getItem("data")) || [];
-
-function add() {
+function sendData() {
   const name = document.getElementById("name").value;
   const phone = document.getElementById("phone").value;
-  const address = document.getElementById("address").value;
-  const status = document.getElementById("status").value;
 
-  if (!name || !phone || !address) {
-    alert("全部入力して");
+  if (!name || !phone) {
+    alert("名前と電話番号は必須！");
     return;
   }
 
-  data.push({ name, phone, address, status });
-  localStorage.setItem("data", JSON.stringify(data));
-
-  render();
+  document.getElementById("result").innerText = 
+    "送信完了！\n名前：" + name + "\n電話：" + phone;
 }
-
-function render() {
-  const list = document.getElementById("list");
-  list.innerHTML = "";
-
-  data.forEach((item, index) => {
-    const div = document.createElement("div");
-    div.className = "card";
-
-    div.innerHTML = `
-      <strong>${item.name}</strong><br>
-      📞 ${item.phone}<br>
-      🏠 ${item.address}<br>
-      <span class="status-${item.status}">${item.status}</span><br>
-      <button onclick="del(${index})">削除</button>
-    `;
-
-    list.appendChild(div);
-  });
-}
-
-function del(index) {
-  data.splice(index, 1);
-  localStorage.setItem("data", JSON.stringify(data));
-  render();
-}
-
-render();
-
 </script>
 
 </body>
