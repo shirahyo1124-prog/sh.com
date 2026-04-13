@@ -2,28 +2,32 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<title>案件管理ツール</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>入居者紹介フォーム</title>
 
 <style>
 body {
   font-family: sans-serif;
-  padding: 20px;
   background: #f5f5f5;
+  padding: 20px;
+}
+
+.container {
+  max-width: 600px;
+  margin: auto;
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
 }
 
 h1 {
   text-align: center;
 }
 
-.container {
-  max-width: 600px;
-  margin: auto;
-}
-
 input, select, button {
-  padding: 10px;
-  margin: 5px 0;
   width: 100%;
+  padding: 10px;
+  margin: 8px 0;
 }
 
 button {
@@ -33,28 +37,29 @@ button {
 }
 
 .card {
-  background: white;
+  background: #fff;
   padding: 10px;
   margin-top: 10px;
-  border-radius: 5px;
+  border: 1px solid #ddd;
 }
 
 .status-未対応 { color: red; }
 .status-対応中 { color: orange; }
 .status-完了 { color: green; }
 </style>
-
 </head>
+
 <body>
 
 <div class="container">
 
-<h1>案件管理</h1>
+<h1>入居者紹介フォーム</h1>
 
-<h2>案件入力</h2>
+<h2>入力</h2>
 
-<input type="text" id="name" placeholder="名前">
-<input type="text" id="content" placeholder="内容">
+<input id="name" placeholder="名前">
+<input id="phone" placeholder="電話番号">
+<input id="address" placeholder="住所">
 
 <select id="status">
   <option>未対応</option>
@@ -62,10 +67,9 @@ button {
   <option>完了</option>
 </select>
 
-<button onclick="addData()">追加</button>
+<button onclick="add()">送信</button>
 
 <h2>一覧</h2>
-<p id="count"></p>
 <div id="list"></div>
 
 </div>
@@ -74,34 +78,26 @@ button {
 
 let data = JSON.parse(localStorage.getItem("data")) || [];
 
-function addData() {
+function add() {
   const name = document.getElementById("name").value;
-  const content = document.getElementById("content").value;
+  const phone = document.getElementById("phone").value;
+  const address = document.getElementById("address").value;
   const status = document.getElementById("status").value;
 
-  if (!name || !content) {
+  if (!name || !phone || !address) {
     alert("全部入力して");
     return;
   }
 
-  data.push({ name, content, status });
+  data.push({ name, phone, address, status });
   localStorage.setItem("data", JSON.stringify(data));
 
-  render();
-}
-
-function deleteData(index) {
-  data.splice(index, 1);
-  localStorage.setItem("data", JSON.stringify(data));
   render();
 }
 
 function render() {
   const list = document.getElementById("list");
-  const count = document.getElementById("count");
-
   list.innerHTML = "";
-  count.textContent = "合計：" + data.length;
 
   data.forEach((item, index) => {
     const div = document.createElement("div");
@@ -109,13 +105,20 @@ function render() {
 
     div.innerHTML = `
       <strong>${item.name}</strong><br>
-      ${item.content}<br>
+      📞 ${item.phone}<br>
+      🏠 ${item.address}<br>
       <span class="status-${item.status}">${item.status}</span><br>
-      <button onclick="deleteData(${index})">削除</button>
+      <button onclick="del(${index})">削除</button>
     `;
 
     list.appendChild(div);
   });
+}
+
+function del(index) {
+  data.splice(index, 1);
+  localStorage.setItem("data", JSON.stringify(data));
+  render();
 }
 
 render();
