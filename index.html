@@ -1,79 +1,243 @@
 <!doctype html>
 <html lang="ja">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>入居者紹介フォーム</title>
+<meta charset="utf-8">
+<title>入居者紹介管理</title>
 
-  <!-- アイコン -->
-  <link rel="stylesheet" href="https://unpkg.com/ionicons@4.5.10-0/dist/css/ionicons.min.css">
+<style>
+body {
+  font-family: sans-serif;
+  margin: 0;
+  background: #f0f2f5;
+}
 
-  <!-- 郵便番号→住所自動入力 -->
-  <script src="https://yubinbango.github.io/yubinbango-core/yubinbango-core.js"></script>
+.nav {
+  display: flex;
+  background: #1e293b;
+  color: white;
+}
+.nav div {
+  padding: 15px 30px;
+  cursor: pointer;
+}
+.nav div:hover {
+  background: #334155;
+}
 
-  <style>
-    body {
-      font-family: sans-serif;
-      padding: 20px;
-      background: #f5f5f5;
-    }
-    .box {
-      background: white;
-      padding: 20px;
-      border-radius: 10px;
-      max-width: 400px;
-      margin: auto;
-    }
-    input, button {
-      width: 100%;
-      padding: 10px;
-      margin-top: 10px;
-      font-size: 16px;
-    }
-    button {
-      background: #007bff;
-      color: white;
-      border: none;
-      border-radius: 5px;
-    }
-  </style>
+.page {
+  display: none;
+  padding: 30px;
+}
+.active {
+  display: block;
+}
+
+.box {
+  background: white;
+  padding: 30px;
+  border-radius: 10px;
+  max-width: 900px;
+}
+
+h3 {
+  margin-top: 30px;
+}
+
+input, select, textarea {
+  width: 100%;
+  padding: 10px;
+  margin-top: 8px;
+}
+
+.row {
+  display: flex;
+  gap: 10px;
+}
+.row > div {
+  flex: 1;
+}
+
+button {
+  margin-top: 20px;
+  padding: 12px;
+  width: 100%;
+  background: #2563eb;
+  color: white;
+  border: none;
+  border-radius: 5px;
+}
+</style>
 </head>
 
 <body>
 
-<div class="box h-adr">
-  <h2><i class="ion-ios-home"></i> 入居者紹介フォーム</h2>
+<div class="nav">
+  <div onclick="showPage('form')">フォーム</div>
+  <div onclick="showPage('progress')">進捗状況</div>
+  <div onclick="showPage('dashboard')">ダッシュボード</div>
+</div>
 
-  <!-- 郵便番号 -->
-  <input type="text" class="p-postal-code" placeholder="郵便番号 (例: 1000001)">
+<div id="form" class="page active">
+  <div class="box">
 
-  <!-- 住所 -->
-  <input type="text" class="p-region p-locality p-street-address p-extended-address" placeholder="住所">
+    <h2>入居者紹介フォーム</h2>
 
-  <!-- 名前 -->
-  <input type="text" id="name" placeholder="名前">
+    <p>
+      ご紹介ありがとうございます。下記項目をご入力ください。<br>
+      ※すでにご登録済みの入居者様情報に変更があった場合は、本フォームからの再送ではなく別途お電話・メールにて弊社までお問い合わせください。
+    </p>
 
-  <!-- 電話番号 -->
-  <input type="text" id="phone" placeholder="電話番号">
+    <h3>紹介者様情報</h3>
+    <div class="row">
+      <div>
+        <label>担当者 姓</label>
+        <input type="text" id="agent_sei">
+      </div>
+      <div>
+        <label>担当者 名</label>
+        <input type="text" id="agent_mei">
+      </div>
+    </div>
 
-  <!-- 送信 -->
-  <button onclick="sendData()">送信</button>
+    <h3>入居者様情報</h3>
+    <div class="row">
+      <div><input type="text" placeholder="姓"></div>
+      <div><input type="text" placeholder="名"></div>
+    </div>
+    <div class="row">
+      <div><input type="text" placeholder="セイ"></div>
+      <div><input type="text" placeholder="メイ"></div>
+    </div>
 
-  <p id="result"></p>
+    <label>性別</label>
+    <select>
+      <option>男性</option>
+      <option>女性</option>
+      <option>その他</option>
+    </select>
+
+    <label>生年月日</label>
+    <input type="date">
+
+    <label>メールアドレス</label>
+    <input type="email">
+
+    <label>携帯電話</label>
+    <input type="tel">
+
+    <label><input type="checkbox"> SMS連絡禁止</label>
+    <label><input type="checkbox"> 法人名義での契約希望</label>
+
+    <p style="font-size:12px; color:gray;">
+      *メールアドレスは買取率に影響するため必須推奨<br>
+      *SMS連絡禁止がない場合、SMS送信されます
+    </p>
+
+    <h3>入居先情報</h3>
+    <label>物件タイプ</label>
+    <select>
+      <option>新築</option>
+      <option>既存</option>
+    </select>
+
+    <label>住居タイプ</label>
+    <select>
+      <option>戸建て</option>
+      <option>集合住宅</option>
+    </select>
+
+    <h3>住所情報</h3>
+    <label>郵便番号</label>
+    <input type="text" placeholder="例: 1000001">
+
+    <label>住所</label>
+    <input type="text">
+
+    <div class="row">
+      <div><input type="text" placeholder="建物名"></div>
+      <div><input type="text" placeholder="建物名カナ"></div>
+    </div>
+
+    <label>部屋番号</label>
+    <input type="text">
+
+    <h3>入居日</h3>
+    <input type="date">
+
+    <h3>管理会社情報</h3>
+    <label>管理会社名</label>
+    <input type="text">
+
+    <label>電話番号</label>
+    <input type="tel">
+
+    <h3>連絡希望</h3>
+    <label>連絡希望日</label>
+    <input type="date">
+
+    <label>連絡希望時間</label>
+    <select>
+      <option>10時</option>
+      <option>11時</option>
+      <option>12時</option>
+      <option>13時</option>
+      <option>14時</option>
+      <option>15時</option>
+      <option>16時</option>
+      <option>17時</option>
+      <option>18時</option>
+      <option>19時</option>
+    </select>
+
+    <h3>物件設備</h3>
+    <label>電気</label>
+    <select>
+      <option>従量電灯</option>
+      <option>オール電化</option>
+      <option>管理会社指定</option>
+    </select>
+
+    <label>水道</label>
+    <select>
+      <option>地域水道局</option>
+      <option>案内不要</option>
+    </select>
+
+    <label>ガス</label>
+    <select>
+      <option>都市ガス</option>
+      <option>プロパン</option>
+      <option>オール電化</option>
+    </select>
+
+    <label><input type="checkbox"> ネット無料物件</label>
+
+    <h3>備考</h3>
+    <textarea rows="4"></textarea>
+
+    <button onclick="submitForm()">確認</button>
+
+    <p id="result"></p>
+
+  </div>
+</div>
+
+<div id="progress" class="page">
+  <h2>進捗状況</h2>
+</div>
+
+<div id="dashboard" class="page">
+  <h2>ダッシュボード</h2>
 </div>
 
 <script>
-function sendData() {
-  const name = document.getElementById("name").value;
-  const phone = document.getElementById("phone").value;
+function showPage(pageId) {
+  document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
+  document.getElementById(pageId).classList.add("active");
+}
 
-  if (!name || !phone) {
-    alert("名前と電話番号は必須！");
-    return;
-  }
-
-  document.getElementById("result").innerText = 
-    "送信完了！\n名前：" + name + "\n電話：" + phone;
+function submitForm() {
+  alert("確認画面は次で実装する");
 }
 </script>
 
